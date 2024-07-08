@@ -1,0 +1,44 @@
+{% extends 'notes/base.html' %}
+{% block title %} | Note List{% endblock %}
+{% block content %}
+    <h2>My Notes</h2>
+    <a href="{% url 'note_create' %}">Create New Note</a>
+    <ul>
+        {% for note in object_list %}
+            <li>
+                {{ note.title }}
+                <button onclick="location.href=`{% url 'note_edit' note.pk %}`">Edit</button>
+                <button onclick="location.href=`{% url 'note_delete' note.pk %}`">Delete</button>
+            </li>
+        {% empty %}
+            <li>No notes yet.</li>
+        {% endfor %}
+    </ul>
+    <div class="pagination">
+        <span class="step-links">
+            {% if is_paginated %}
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            {% else %}
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+            {% endif %}
+        </span>
+    </div>
+    <form action="{% url 'logout' %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+{% endblock %}
